@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Data;
+use App\Job;
 use Illuminate\Http\Request;
 
 class DataController extends Controller
@@ -13,7 +14,8 @@ class DataController extends Controller
      */
     public function index()
     {
-        //
+        $data = Job::join ('data', 'jobs.id', '=', 'data.jobs_id')->paginate(5);
+		return view ('data')->with('data', $data);
     }
 
     /**
@@ -22,8 +24,9 @@ class DataController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {
-        //
+    {	
+		$add = Job::all();
+        return view ('adddata')->with('add', $add);
     }
 
     /**
@@ -34,7 +37,18 @@ class DataController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, ['nama_lengkap' => 'required', 
+									'alamat' => 'required',
+									'tgl_lahir' => 'required',
+									'jobs_id' => 'required']);
+		$tambah = new Data();
+		$tambah->nama_lengkap = $request['nama_lengkap'];
+		$tambah->alamat = $request['alamat'];
+		$tambah->tgl_lahir = $request['tgl_lahir'];
+		$tambah->jobs_id = $request['jobs_id'];
+		$tambah->save ();
+		
+		return redirect()->to('/data');
     }
 
     /**
@@ -56,7 +70,9 @@ class DataController extends Controller
      */
     public function edit($id)
     {
-        //
+        $viewedit = Data::where ('id', $id)->first();
+		$jobOpt = Job::all();
+		return view ('editdata', compact ('viewedit', 'jobOpt'));
     }
 
     /**
@@ -68,7 +84,14 @@ class DataController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $update = Data::where ('id', $id)->first();
+		$update->nama_lengkap = $request['nama_lengkap'];
+		$update->alamat = $request['alamat'];
+		$update->tgl_lahir = $request['tgl_lahir'];
+		$update->jobs_id = $request['jobs_id'];
+		$update->update();
+		
+		return redirect()->to('/data');
     }
 
     /**
@@ -79,6 +102,9 @@ class DataController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $destroy = Data::find($id);
+		$destroy->delete();
+		
+		return redirect()->to('/data');
     }
 }

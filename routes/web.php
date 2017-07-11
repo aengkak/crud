@@ -26,3 +26,8 @@ Route::post('updatejob/{id}', 'JobController@update');
 Route::get('deletejob/{id}', 'JobController@destroy');
 
 Route::get('/data', 'DataController@index');
+Route::get('/adddata', 'DataController@create');
+Route::post('/storedata', 'DataController@store');
+Route::get('/editdata/{id}', 'DataController@edit');
+Route::post('/updatedata/{id}', 'DataController@update');
+Route::get('/deletedata/{id}', 'DataController@destroy');
